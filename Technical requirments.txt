@@ -1,0 +1,60 @@
+
+Sequence and trigger for auto-incrementing id 
+	CREATE SEQUENCE Car_SEQ
+	START WITH 1
+	INCREMENT BY 1
+	CACHE 10;
+
+	CREATE OR REPLACE TRIGGER car_INC
+		BEFORE INSERT ON CARS
+		REFERENCING NEW AS NEW
+		FOR EACH ROW
+	BEGIN
+ 	 	if(:new.ID is null) then
+ 	 	SELECT Car_SEQ.nextval
+ 	 	INTO :new.ID
+ 		 FROM dual;
+ 	 	end if;
+	END;
+
+	ALTER TRIGGER "car_INC" ENABLE;
+
+Procedure for deleting car from table
+	create or replace procedure delete_row(p_id cars.id%TYPE) IS
+	begin
+    		execute immediate 'delete from cars where id = ' || p_id;
+	end;
+Procedure for inserting new car into table
+	create or replace procedure insert_cars(v_carname cars.carname%TYPE,v_price 		cars.price%TYPE,v_carbody cars.carbody%TYPE,v_mileage cars.mileage%TYPE,
+	v_engV cars.engV%TYPE, v_engType cars.engType%TYPE, v_registration 	cars.registration%TYPE,v_caryear cars.caryear%TYPE, v_carmodel cars.carmodel	%TYPE,v_drive cars.drive%TYPE, v_carphoto cars.carphoto%TYPE) IS
+	begin
+   		 INSERT INTO Cars(CARNAME, PRICE, CARBODY, MILEAGE, ENGV, ENGTYPE, 		REGISTRATION, CARYEAR, CARMODEL, DRIVE, carphoto) 
+    		VALUES (v_carname,v_price,v_carbody,v_mileage,v_engv, v_engtype , 		v_registration , v_caryear , v_carmodel , v_drive ,  v_carphoto);
+	end insert_cars;
+
+Procedure for updating car in table
+	create or replace procedure update_car(p_id cars.id%TYPE, p_price cars.price%type) 	IS
+	begin
+    		execute immediate 'update cars set price = ' || p_price || ' Where id = ' || 		p_id; 
+	end;
+
+Trigger for holding information about actions that was done in our application
+	create or replace trigger log_user_operation
+	after insert or update on cars for each row
+	begin 
+ 		if inserting then
+  		insert into user_log(id,operation_date,action)
+  		values(:NEW.id,SYSDATE,'insert');
+	 else 
+  		insert into user_log(id,operation_date,action)
+  		values(:NEW.id,SYSDATE,'update');
+  		end if;
+	end;
+
+Trigger for holding old and new price of cars 
+	create or replace trigger trig_price
+	after update of price on cars for each row
+	begin
+ 		insert into cars_log(id,operation_date,old_price,new_price)
+ 		values(:NEW.id,SYSDATE,:OLD.price,:NEW.price);
+	end;

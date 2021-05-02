@@ -1,0 +1,33 @@
+CREATE TABLE CARS (
+    id NUMBER NOT NULL,
+    Carname VARCHAR(255), 
+    price REAL, 
+    Carbody VARCHAR(255), 
+    mileage int, 
+    engV REAL, 
+    engType VARCHAR(255),
+    registration VARCHAR(255),
+    caryear int,
+    carmodel VARCHAR(255), 
+    drive VARCHAR(255),
+    carphoto BLOB
+);
+
+INSERT INTO CARS (CARNAME, PRICE, CARBODY, MILEAGE, ENGV, ENGTYPE, REGISTRATION, CARYEAR, DRIVE, CARPHOTO) VALUES ('Mercedes-Benz',20500,'sedan',173,1.8,'Gas','yes',2011,'E-Class','rear');
+--Row 2
+INSERT INTO CARS (CARNAME, PRICE, CARBODY, MILEAGE, ENGV, ENGTYPE, REGISTRATION, CARYEAR, DRIVE, CARPHOTO) VALUES ('Mercedes-Benz',35000,'other',135,5.5,'Petrol','yes',2008,'CL 550','rear');
+--Row 3
+INSERT INTO CARS (CARNAME, PRICE, CARBODY, MILEAGE, ENGV, ENGTYPE, REGISTRATION, CARYEAR, DRIVE, CARPHOTO) VALUES ('Mercedes-Benz',17800,'van',162,1.8,'Diesel','yes',2012,'B 180','front');
+
+create table cars_log(
+        id number PRIMARY KEY,
+        operation_date DATE,
+        old_price number,
+        new_price number
+);
+create table user_log(
+        id number PRIMARY KEY,
+        operation_date DATE,
+        action varchar(20)
+);
+
